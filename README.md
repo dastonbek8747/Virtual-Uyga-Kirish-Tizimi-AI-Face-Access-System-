@@ -2,99 +2,99 @@
 
 # 🧱 Loyihaning Tuzilishi
 
-project/
+smart_home_access/
 ├── app/
-│   ├── api/                 # FastAPI endpoint router'lari
-│   │   ├── routes/
-│   │   │   ├── auth.py      # Kirish/ro'yxatdan o'tish
-│   │   │   ├── access.py    # Kirish ruxsati (Face API)
-│   │   │   └── user.py      # Foydalanuvchi bilan bog'liq endpointlar
-│   │   └── deps.py          # Token tekshiruv, roli tekshirish
-│   ├── core/
-│   │   ├── config.py        # Sozlamalar (env)
-│   │   └── security.py      # JWT va xavfsizlik
-│   ├── models/              # SQLAlchemy ORM modellar
+│   ├── main.py                 # FastAPI kirish nuqtasi
+│   ├── core/                   # Sozlamalar va konfiglar
+│   │   ├── config.py           # Loyihaning umumiy sozlamalari
+│   │   └── security.py         # Token, autentifikatsiya funksiyalari
+│   ├── models/                 # SQLAlchemy ORM modellari
+│   │   ├── user.py             # Uy egasi va foydalanuvchilar
+│   │   ├── log.py              # Loglar (kirish, buyruqlar)
+│   │   ├── guest.py            # Mehmonlar modeli
+│   ├── schemas/                # Pydantic validatsiya sxemalari
 │   │   ├── user.py
-│   │   └── log.py           # Kirish loglari (kim, qachon kirgan)
-│   ├── schemas/             # Pydantic sxemalar
-│   │   ├── user.py
-│   │   └── access.py
-│   ├── services/            # Business logika
-│   │   ├── face.py          # OpenCV bilan ishlovchi modul
-│   │   ├── ai_agent.py      # LangChain + LLaMA3 agent xulosa beradi
-│   │   └── notify.py        # Telegram yoki email xabarnoma
-│   ├── database.py          # DB ulanishi
-│   └── main.py              # FastAPI ilovasi
-├── .env                     # Maxfiy sozlamalar (LLM API, JWT key, DB url)
-├── requirements.txt
-└── README.md
+│   │   ├── log.py
+│   │   ├── guest.py
+│   ├── api/                    # Routerlar
+│   │   ├── deps.py             # Bog'lanishlar
+│   │   └── routes/
+│   │       ├── auth.py         # Login / JWT
+│   │       ├── face.py         # Yuz tanib olish
+│   │       ├── voice.py        # Ovozli buyruqlar
+│   │       ├── logs.py         # Loglarni ko‘rish
+│   │       └── guests.py       # Mehmonlar qo‘shish, olib tashlash
+│   ├── services/               # Asosiy xizmatlar (logika)
+│   │   ├── ai_agent.py         # LangChain/LLaMA agent
+│   │   ├── face_recognition.py # OpenCV + Face tanish
+│   │   ├── voice_handler.py    # Ovozli buyruqni tanib olish
+│   │   ├── logger.py           # Log yozish servisi
+│   │   └── notify.py           # Telegram/e-mail yuborish
+│   ├── database/
+│   │   ├── base.py             # Baza ulanishi
+│   │   └── session.py
+├── requirements.txt            # Kutubxonalar ro‘yxati
+├── README.md                   # Loyihaning tavsifi
+├── .env                        # Mahfiy sozlamalar (port, DB, token)
+├── run.sh                      # Ishga tushirish uchun script
 
-# ✅ Bosqichma-bosqich Yozilishi
 
-## 1. API boshlanishi — FastAPI + Auth + DB
-- [ ] JWT asosida kirish va ro'yxatdan o'tish
-- [ ] Foydalanuvchini qo'shish (admin)
-- [ ] Kirgan foydalanuvchini logga yozish
+# 🏠 Virtual Uyga Kirish Tizimi (Smart Home AI Access System)
 
-## 2. Face tanib olish API (OpenCV)
-- [ ] Kamera orqali rasm olish (base64 yoki fayl sifatida)
-- [ ] Rasmni tahlil qilish: yuz bor/yo‘qligini aniqlash
-- [ ] Tanilgan bo‘lsa, AI agentdan ruxsat so‘rash (LangChain)
-
-## 3. AI agent (LangChain + LLaMA3 via Ollama)
-- [ ] Foydalanuvchi haqida ma’lumot yuborish
-- [ ] Agent: "Ushbu foydalanuvchiga ruxsat berilsinmi?"
-- [ ] Agent izoh bilan javob beradi (LangGraph da flow)
-
-## 4. Xabarnoma
-- [ ] Admin telegram botga xabar: "Anvar kirishga harakat qildi"
-- [ ] Ruxsat berildi yoki rad etildi degan izoh
-
-## 5. Frontend (alohida loyiha)
-- [ ] Vue 3 yoki Telegram bot orqali ishlash (tanlanadi)
-
-## 📦 `requirements.txt` (asosiy kutubxonalar)
-```
-fastapi
-uvicorn
-python-multipart
-pydantic
-sqlalchemy
-databases
-passlib[bcrypt]
-python-jose
-opencv-python
-langchain
-ollama
-langgraph
-requests
-python-telegram-bot
-```
-
-## 📘 `README.md` qisqacha ko'rinishi
-```
-# 🏠 AI Face Access System
-
-AI yordamida foydalanuvchilarni yuz orqali tanib, ularning kirishiga ruxsat beruvchi tizim. Ruxsat AI agent tomonidan aniqlanadi (LangChain + LLaMA3).
-
-## Texnologiyalar
-- FastAPI, OpenCV, LangChain, LLaMA3, Ollama, PostgreSQL, Telegram API
-
-## Boshlash uchun:
-```bash
-cp .env.example .env
-uvicorn app.main:app --reload
-```
-
-## API endpointlar:
-- POST /auth/login
-- POST /auth/register
-- POST /access/detect_face
-- GET /access/logs
-```
+AI orqali boshqariladigan zamonaviy aqlli uy kirish tizimi. Bu loyiha yuzni tanish, ovozli buyruq bilan eshikni ochish va AI agent yordamida mehmonlarni boshqarish imkonini beradi.
 
 ---
 
-Hozir API yozishni boshlashga tayyormiz. Avval `main.py`, `database.py`, `config.py`, `auth.py` va `user.py` qismlarini yozamizmi? Yoki `face.py`dan boshlaymizmi?
+## ✨ Asosiy imkoniyatlar
 
-❓ Qaysi modulli API'dan boshlaylik: `auth`, `face`, yoki `agent`?
+- 🤖 **AI Agent (LangChain + LLaMA via Ollama):**
+  - Mehmon bilan suhbat qura oladi
+  - Uy egasining ovozli buyruqlarini tushunadi
+
+- 🧠 **Yuzni tanib olish (OpenCV + Face Rec):**
+  - Kiruvchilarni yuz orqali aniqlaydi
+  - Tanilmagan mehmonlar loglanadi
+
+- 🎤 **Ovoz bilan boshqaruv:**
+  - Uy egasi: "Bu mening do‘stim" deb aytadi → AI unga ruxsat beradi
+  - Buyruqlar: `qo‘sh`, `och`, `rad et`, va boshqalar
+
+- 📚 **Kirish loglari (audit):**
+  - Kim, qachon va qanday kirishga uringan
+  - Qanday buyruq berilgan, kim ruxsat olgan
+
+---
+
+## 🛠 Texnologiyalar
+
+| Texnologiya      | Maqsad                         |
+|------------------|--------------------------------|
+| **FastAPI**       | Backend REST API               |
+| **OpenCV**        | Yuzni aniqlash (rasmlar)       |
+| **LangChain**     | AI agentni yaratish            |
+| **LLaMA 3 (Ollama)** | Tabiiy tilni tushunish (local LLM) |
+| **SQLite/PostgreSQL** | Ma’lumotlar bazasi             |
+| **Pydantic**       | Ma’lumotlar sxemasi            |
+| **JWT**            | Token asosida autentifikatsiya |
+| **Aiogram** *(keyinchalik)* | Telegram frontend (ixtiyoriy)   |
+
+---
+
+## ⚙️ Loyihani ishga tushurish
+
+```bash
+git clone https://github.com/username/smart-home-access.git
+cd smart-home-access
+
+# Muhit yaratish
+python -m venv venv
+source venv/bin/activate
+
+# Kutubxonalarni o‘rnatish
+pip install -r requirements.txt
+
+# O‘rnatish uchun .env fayl yarating
+cp .env.example .env
+
+# Loyihani ishga tushurish
+uvicorn app.main:app --reload
