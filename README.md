@@ -1,59 +1,70 @@
-# 🏠 Virtual Uyga Kirish Tizimi (Smart Home AI Access System)
+# Smart Home AI Access System
 
-AI orqali boshqariladigan zamonaviy aqlli uy kirish tizimi. Bu loyiha yuzni tanish, ovozli buyruq bilan eshikni ochish va AI agent yordamida mehmonlarni boshqarish imkonini beradi.
+A smart-home door access system. It recognizes faces, listens to voice commands, and uses an AI agent to decide who may enter.
 
----
+## Features
 
-## ✨ Asosiy imkoniyatlar
+- **AI agent (LangChain + LLaMA 3 via Ollama)**
+  - Talks to guests at the door.
+  - Understands the owner's voice commands.
+- **Face recognition (OpenCV + face_recognition)**
+  - Identifies people by their face.
+  - Logs unknown visitors.
+- **Voice control**
+  - The owner can say "This is my friend" and the AI grants access.
+  - Supported commands: `add`, `open`, `deny`, and more.
+- **Access log (audit)**
+  - Who tried to enter, when, and how.
+  - Which command was given and who was allowed in.
 
-- 🤖 **AI Agent (LangChain + LLaMA via Ollama):**
-  - Mehmon bilan suhbat qura oladi
-  - Uy egasining ovozli buyruqlarini tushunadi
+## Tech stack
 
-- 🧠 **Yuzni tanib olish (OpenCV + Face Rec):**
-  - Kiruvchilarni yuz orqali aniqlaydi
-  - Tanilmagan mehmonlar loglanadi
+| Technology | Purpose |
+|---|---|
+| FastAPI | Backend REST API |
+| OpenCV | Face detection |
+| face_recognition | Face matching |
+| LangChain | Build the AI agent |
+| LLaMA 3 (Ollama) | Local LLM for natural language |
+| SQLite / PostgreSQL | Database |
+| Pydantic | Data schemas |
+| JWT | Token-based authentication |
 
-- 🎤 **Ovoz bilan boshqaruv:**
-  - Uy egasi: "Bu mening do‘stim" deb aytadi → AI unga ruxsat beradi
-  - Buyruqlar: `qo‘sh`, `och`, `rad et`, va boshqalar
-
-- 📚 **Kirish loglari (audit):**
-  - Kim, qachon va qanday kirishga uringan
-  - Qanday buyruq berilgan, kim ruxsat olgan
-
----
-
-## 🛠 Texnologiyalar
-
-| Texnologiya      | Maqsad                         |
-|------------------|--------------------------------|
-| **FastAPI**       | Backend REST API               |
-| **OpenCV**        | Yuzni aniqlash (rasmlar)       |
-| **LangChain**     | AI agentni yaratish            |
-| **LLaMA 3 (Ollama)** | Tabiiy tilni tushunish (local LLM) |
-| **SQLite/PostgreSQL** | Ma’lumotlar bazasi             |
-| **Pydantic**       | Ma’lumotlar sxemasi            |
-| **JWT**            | Token asosida autentifikatsiya |
-| **Aiogram** *(keyinchalik)* | Telegram frontend (ixtiyoriy)   |
-
----
-
-## ⚙️ Loyihani ishga tushurish
+## Setup
 
 ```bash
-git clone https://github.com/username/smart-home-access.git
-cd smart-home-access
+git clone https://github.com/dastonbek8747/smart-home-face-access.git
+cd smart-home-face-access
 
-# Muhit yaratish
 python -m venv venv
-source venv/bin/activate
+source venv/bin/activate        # Windows: venv\Scripts\activate
 
-# Kutubxonalarni o‘rnatish
-pip install -r requirements.txt
+pip install -r app/requirements.txt
 
-# O‘rnatish uchun .env fayl yarating
-cp .env.example .env
+cp .env.example .env            # then edit .env
+```
 
-# Loyihani ishga tushurish
+## Run
+
+```bash
 uvicorn app.main:app --reload
+```
+
+API docs: http://localhost:8000/docs
+
+## Project structure
+
+```
+app/
+  api/routers/     # auth, face, guests, logs, voice endpoints
+  core/            # config and security helpers
+  database/        # session and base models
+  models/          # user, guest, log tables
+  schemas/         # request/response schemas
+  services/        # ai_agent, face_recognition, voice_handler, logger, notify
+  main.py          # app entry point
+```
+
+## License
+
+MIT
